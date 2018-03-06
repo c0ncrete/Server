@@ -3248,6 +3248,21 @@ XS(XS__GetSpellTargetType)
 	XSRETURN_UV(spell_val);
 }
 
+XS(XS__GetSpellMinLevel);
+XS(XS__GetSpellMinLevel)
+{
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: GetSpellMinLevel(spell_id)");
+
+	uint32		spell_id = (uint32)SvUV(ST(0));
+	int32		spell_val = 0;
+	dXSTARG;
+
+	spell_val = GetMinLevel(spell_id);
+	XSRETURN_UV(spell_val);
+}
+
 XS(XS__FlyMode);
 XS(XS__FlyMode) {
 	dXSARGS;
@@ -3744,6 +3759,7 @@ EXTERN_C XS(boot_quest)
 		newXS(strcpy(buf, "GetInstanceID"), XS__GetInstanceID, file);
 		newXS(strcpy(buf, "GetSpellResistType"), XS__GetSpellResistType, file);
 		newXS(strcpy(buf, "GetSpellTargetType"), XS__GetSpellTargetType, file);
+		newXS(strcpy(buf, "GetSpellMinLevel"), XS__GetSpellMinLevel, file);
 		newXS(strcpy(buf, "GetTimeSeconds"), XS__GetTimeSeconds, file);
 		newXS(strcpy(buf, "GetZoneID"), XS__GetZoneID, file);
 		newXS(strcpy(buf, "GetZoneLongName"), XS__GetZoneLongName, file);

@@ -50,6 +50,8 @@ struct AuraRecord;
 struct NewSpawn_Struct;
 struct PlayerPositionUpdateServer_Struct;
 
+const int COLLISION_BOX_SIZE = 4;
+
 namespace EQEmu
 {
 	struct ItemData;
@@ -578,6 +580,7 @@ public:
 	void SetFlyMode(uint8 flymode);
 	inline void Teleport(glm::vec3 NewPosition) { m_Position.x = NewPosition.x; m_Position.y = NewPosition.y;
 		m_Position.z = NewPosition.z; };
+	void TryMoveAlong(float distance, float angle, bool send = true);
 
 	//AI
 	static uint32 GetLevelCon(uint8 mylevel, uint8 iOtherLevel);
@@ -1313,6 +1316,9 @@ protected:
 	char lastname[64];
 
 	glm::vec4 m_Delta;
+	// just locs around them to double check, if we do expand collision this should be cached on movement
+	// ideally we should use real models, but this should be quick and work mostly
+	glm::vec4 m_CollisionBox[COLLISION_BOX_SIZE];
 
 	EQEmu::LightSourceProfile m_Light;
 
@@ -1423,6 +1429,7 @@ protected:
 	std::unique_ptr<Timer> AI_movement_timer;
 	std::unique_ptr<Timer> AI_target_check_timer;
 	bool movetimercompleted;
+	int8 ForcedMovement; // push
 	bool permarooted;
 	std::unique_ptr<Timer> AI_scan_area_timer;
 	std::unique_ptr<Timer> AI_walking_timer;

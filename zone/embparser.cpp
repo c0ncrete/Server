@@ -788,51 +788,59 @@ void PerlembParser::MapFunctions() {
 	_empty_sv = newSV(0);
 
 	perl->eval(
-	"{"
-	"package quest;"
-	"&boot_quest;"			//load our quest XS
+		"{"
+		"package quest;"
+		"&boot_quest;"			//load our quest XS
 #ifdef EMBPERL_XS_CLASSES
-	"package Mob;"
-	"&boot_Mob;"			//load our Mob XS
+		"package Mob;"
+		"&boot_Mob;"			//load our Mob XS
 
-	"package Client;"
-	"our @ISA = qw(Mob);"	//client inherits mob.
-	"&boot_Mob;"			//load our Mob XS
-	"&boot_Client;"			//load our Client XS
+		"package Client;"
+		"our @ISA = qw(Mob);"	//client inherits mob.
+		"&boot_Mob;"			//load our Mob XS
+		"&boot_Client;"			//load our Client XS
 
-	"package NPC;"
-	"our @ISA = qw(Mob);"	//NPC inherits mob.
-	"&boot_Mob;"			//load our Mob XS
-	"&boot_NPC;"			//load our NPC XS
+		"package NPC;"
+		"our @ISA = qw(Mob);"	//NPC inherits mob.
+		"&boot_Mob;"			//load our Mob XS
+		"&boot_NPC;"			//load our NPC XS
 
-	"package Corpse;"
-	"our @ISA = qw(Mob);"	//Corpse inherits mob.
-	"&boot_Mob;"			//load our Mob XS
-	"&boot_Corpse;"			//load our Mob XS
+		"package Corpse;"
+		"our @ISA = qw(Mob);"	//Corpse inherits mob.
+		"&boot_Mob;"			//load our Mob XS
+		"&boot_Corpse;"			//load our Mob XS
 
-	"package EntityList;"
-	"&boot_EntityList;"		//load our EntityList XS
+		"package EntityList;"
+		"&boot_EntityList;"		//load our EntityList XS
 
-	"package PerlPacket;"
-	"&boot_PerlPacket;"		//load our PerlPacket XS
+		"package PerlPacket;"
+		"&boot_PerlPacket;"		//load our PerlPacket XS
 
-	"package Group;"
-	"&boot_Group;"		//load our Group XS
+		"package Group;"
+		"&boot_Group;"		//load our Group XS
 
-	"package Raid;"
-	"&boot_Raid;"		//load our Raid XS
+		"package Raid;"
+		"&boot_Raid;"		//load our Raid XS
 
-	"package QuestItem;"
-	"&boot_QuestItem;"	// load quest Item XS
+		"package QuestItem;"
+		"&boot_QuestItem;"	// load quest Item XS
 
-	"package HateEntry;"
-	"&boot_HateEntry;"	// load quest Hate XS
+		"package HateEntry;"
+		"&boot_HateEntry;"	// load quest Hate XS
 
-	"package Object;"
-	"&boot_Object;"	// load quest Object XS
+		"package Object;"
+		"&boot_Object;"	// load quest Object XS
 
-	"package Doors;"
-	"&boot_Doors;"	// load quest Doors XS
+		"package Doors;"
+		"&boot_Doors;"	// load quest Doors XS
+
+#ifdef BOTS
+		"package Bot;"
+		"our @ISA = qw(NPC);"	// Bot inherits NPC
+		"&boot_Mob;"			// load our Mob XS
+		"&boot_NPC;"			// load our NPC XS
+		"&boot_Bot;"			// load our Bot XS
+#endif
 
 #endif
 	"package main;"

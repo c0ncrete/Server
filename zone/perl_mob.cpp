@@ -40,6 +40,10 @@ typedef const char Const_char;
 #include "client.h"
 #include "../common/spdat.h"
 
+#ifdef BOTS
+#include "bot.h"
+#endif
+
 #ifdef THIS /* this macro seems to leak out on some systems */
 #undef THIS
 #endif
@@ -9039,9 +9043,64 @@ XS(XS_Mob_GetMeleeMitigation) {
 	XSRETURN(1);
 }
 
+#ifdef BOTS
+XS(XS_Mob_IsBot); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Mob_IsBot)
+{
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: Mob::IsBot(THIS)");
+	{
+		Mob *		THIS;
+		bool		RETVAL;
+
+		if (sv_derived_from(ST(0), "Mob")) {
+			IV tmp = SvIV((SV*)SvRV(ST(0)));
+			THIS = INT2PTR(Mob *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Mob");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		RETVAL = THIS->IsBot();
+		ST(0) = boolSV(RETVAL);
+		sv_2mortal(ST(0));
+	}
+	XSRETURN(1);
+}
+
+XS(XS_Mob_CastToBot); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Mob_CastToBot)
+{
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: Mob::CastToBot(THIS)");
+	{
+		Mob *		THIS;
+		Bot *		RETVAL;
+
+		if (sv_derived_from(ST(0), "Mob")) {
+			IV tmp = SvIV((SV*)SvRV(ST(0)));
+			THIS = INT2PTR(Mob *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Mob");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		RETVAL = THIS->CastToBot();
+		ST(0) = sv_newmortal();
+		sv_setref_pv(ST(0), "Bot", (void*)RETVAL);
+	}
+	XSRETURN(1);
+}
+#endif
+
 #ifdef __cplusplus
 extern "C"
 #endif
+
 XS(boot_Mob); /* prototype to pass -Wmissing-prototypes */
 XS(boot_Mob)
 {
@@ -9373,6 +9432,10 @@ XS(boot_Mob)
 		newXSproto(strcpy(buf, "IsSilenced"), XS_Mob_IsSilenced, file, "$");
 		newXSproto(strcpy(buf, "IsAmnesiad"), XS_Mob_IsAmnesiad, file, "$");
 		newXSproto(strcpy(buf, "GetMeleeMitigation"), XS_Mob_GetMeleeMitigation, file, "$");
+#ifdef BOTS
+		newXSproto(strcpy(buf, "IsBot"), XS_Mob_IsBot, file, "$");
+		newXSproto(strcpy(buf, "CastToBot"), XS_Mob_CastToBot, file, "$");
+#endif
 	XSRETURN_YES;
 }
 
